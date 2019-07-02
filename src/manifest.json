@@ -1,0 +1,21 @@
+{
+    "name": "TGD plugin",
+    "version": "0.1",
+    "description": "TGD plugin",
+    "manifest_version": 2,
+    "permissions": [
+        "declarativeContent",
+        "storage",
+        "cookies",
+        "<all_urls>"
+    ],
+    "background": {
+        "scripts": [
+            "scripts/background.js"
+        ],
+        "persistent": false
+    },
+    "page_action": {
+        "default_popup": "popup.html"
+    }
+}
