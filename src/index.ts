@@ -21,11 +21,11 @@ function checkAttendance(message: string) {
         const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
 
         if (tgdFetch.url !== attendanceUrl) {
-            log(tgdFetch);
             resolve({ success: false, message: "로그인을 한 후 시도해주세요" });
             return;
         }
 
+        const currentPoint = parseCurrentPoint(tgdDocument);
         const answer = parseQuestion(tgdDocument);
 
         const formData = new FormData();
@@ -75,4 +75,18 @@ function parseQuestion(tgdDocument: Document) {
     const num2 = parseInt(match![2]);
 
     return num1 + num2;
+}
+
+function parseNickname(tgdDocument: Document) {
+
+}
+
+function parseCurrentPoint(tgdDocument: Document) {
+    const headerElem = tgdDocument.getElementsByTagName("header")[0];
+    const regex = /<a href="\/member\/point"><strong>(\d+)<\/strong> 포인트<\/a><\/li>/;
+
+    const match = headerElem.innerHTML!.match(regex);
+    const point = match![1];
+
+    return parseInt(point);
 }
