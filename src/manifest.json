@@ -5,9 +5,7 @@
     "manifest_version": 2,
     "permissions": [
         "declarativeContent",
-        "storage",
-        "cookies",
-        "<all_urls>"
+        "storage"
     ],
     "background": {
         "scripts": [

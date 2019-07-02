@@ -1,5 +1,6 @@
-const log = chrome.extension.getBackgroundPage()!.console.log;
-const error = chrome.extension.getBackgroundPage()!.console.error;
+const log = chrome.extension.getBackgroundPage() ? chrome.extension.getBackgroundPage()!.console.log : console.log;
+const error = chrome.extension.getBackgroundPage() ? chrome.extension.getBackgroundPage()!.console.error : console.error;
+const attendanceUrl = "https://tgd.kr/play/attendance";
 
 const button = document.getElementById("button");
 log(button);
@@ -9,8 +10,6 @@ log(button);
 
 checkAttendance("boo");
 
-const attendanceUrl = "https://tgd.kr/play/attendance";
-
 class LoginResult {
     constructor(public success: boolean, public message: string) {
 
@@ -18,41 +17,38 @@ class LoginResult {
 }
 
 function checkAttendance(message: string) {
-    const prom = new Promise<LoginResult>((resolve, reject) => {
-        chrome.cookies.get({ url: "https://tgd.kr", "name": "ci_session" },
-            async cookie => {
-                const tgdFetch = await (await fetch(attendanceUrl, { mode: "cors" }));
-                const tgdBody = await tgdFetch.text();
-                const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
+    const prom = new Promise<LoginResult>(async (resolve, reject) => {
+        const tgdFetch = await fetch(attendanceUrl, { mode: "no-cors" });
+        const tgdBody = await tgdFetch.text();
+        const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
 
-                if (tgdFetch.url !== attendanceUrl) {
-                    resolve({ success: false, message: "로그인을 한 후 시도해주세요" });
-                    return;
-                }
+        if (tgdFetch.url !== attendanceUrl) {
+            resolve({ success: false, message: "로그인을 한 후 시도해주세요" });
+            return;
+        }
 
-                const answer = parseQuestion(tgdDocument);
+        const answer = parseQuestion(tgdDocument);
 
-                const formData = new FormData();
-                formData.append("donotbot", parseDonotbot(tgdDocument));
-                formData.append("message", message);
-                formData.append("answer", answer.toString());
+        const formData = new FormData();
+        formData.append("donotbot", parseDonotbot(tgdDocument));
+        formData.append("message", message);
+        formData.append("answer", answer.toString());
 
-                fetch(attendanceUrl, {
-                    method: "POST",
-                    mode: "cors",
-                    body: formData
-                })
-                    .then(body => body.text())
-                    .then(text => JSON.parse(text))
-                    .then(json => {
-                        const status = json["status"] as number;
-                        const message = json["message"] as string;
+        fetch(attendanceUrl, {
+            method: "POST",
+            mode: "no-cors",
+            body: formData
+        })
+            .then(body => body.text())
+            .then(text => JSON.parse(text))
+            .then(json => {
+                const status = json["status"] as number;
+                const message = json["message"] as string;
 
-                        resolve({
-                            success: status !== 500,
-                            message: message
-                        });
-                    });
+                resolve({
+                    success: status !== 500,
+                    message: message
+                });
             });
     });
 
