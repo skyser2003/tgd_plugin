@@ -1,28 +1,27 @@
-const log = chrome.extension.getBackgroundPage() ? chrome.extension.getBackgroundPage()!.console.log : console.log;
-const error = chrome.extension.getBackgroundPage() ? chrome.extension.getBackgroundPage()!.console.error : console.error;
-const attendanceUrl = "https://tgd.kr/play/attendance";
-
-const button = document.getElementById("button");
-log(button);
-//button!.onclick = (ev) => {
-//   checkAttendance("boo");
-//};
-
-checkAttendance("boo");
-
 class LoginResult {
     constructor(public success: boolean, public message: string) {
 
     }
 }
 
+// Const variables
+const log = chrome.extension.getBackgroundPage() ? chrome.extension.getBackgroundPage()!.console.log : console.log;
+const error = chrome.extension.getBackgroundPage() ? chrome.extension.getBackgroundPage()!.console.error : console.error;
+const attendanceUrl = "https://tgd.kr/play/attendance";
+
+const button = document.getElementById("button");
+button!.onclick = (ev) => {
+    checkAttendance("boo");
+};
+
 function checkAttendance(message: string) {
     const prom = new Promise<LoginResult>(async (resolve, reject) => {
-        const tgdFetch = await fetch(attendanceUrl, { mode: "no-cors" });
+        const tgdFetch = await fetch(attendanceUrl, { mode: "cors" });
         const tgdBody = await tgdFetch.text();
         const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
 
         if (tgdFetch.url !== attendanceUrl) {
+            log(tgdFetch);
             resolve({ success: false, message: "로그인을 한 후 시도해주세요" });
             return;
         }
@@ -36,7 +35,7 @@ function checkAttendance(message: string) {
 
         fetch(attendanceUrl, {
             method: "POST",
-            mode: "no-cors",
+            mode: "cors",
             body: formData
         })
             .then(body => body.text())
