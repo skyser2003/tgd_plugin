@@ -6,7 +6,6 @@
     "permissions": [
         "declarativeContent",
         "storage",
-        "cookies",
         "<all_urls>"
     ],
     "background": {
