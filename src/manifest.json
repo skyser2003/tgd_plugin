@@ -9,9 +9,7 @@
         "<all_urls>"
     ],
     "background": {
-        "scripts": [
-            "scripts/background.js"
-        ],
+        "page": "background.html",
         "persistent": false
     },
     "page_action": {
