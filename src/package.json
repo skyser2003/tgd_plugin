@@ -4,7 +4,8 @@
   "description": "TGD plugin",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "mkdir -p publish && cp -r manifest.json *.html scripts package.json publish/ && npm i --prefix=publish && zip publish.zip publish/*"
   },
   "repository": {
     "type": "git",
