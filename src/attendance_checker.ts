@@ -90,8 +90,13 @@ export class AttendanceChecker {
 
     static async updateAttendHtml() {
         const attendInfo = await this.getAttendInformation();
+        const strDate = attendInfo.date.toString();
+        const year = strDate.substring(0, 4);
+        const month = strDate.substr(4, 2);
+        const day = strDate.substr(6);
+
         document.getElementById("current_point")!.innerHTML = attendInfo.point.toString();
-        document.getElementById("latest_attend_date")!.innerHTML = attendInfo.date.toString();
+        document.getElementById("latest_attend_date")!.innerHTML = `${year}-${month}-${day}`;
         document.getElementById("current_combo")!.innerHTML = attendInfo.combo.toString();
     }
 
