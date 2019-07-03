@@ -8,28 +8,30 @@
 
 <body>
     <div id="ui container">
-        <div class="ui segment">
-            <div class="ui grid">
-                <div class="five wide column">포인트</div>
+        <div class="ui middle aligned padded grid">
+            <div class="row">
+                <div class="five wide column teal">포인트</div>
                 <div id="current_point" class="wide column">-1</div>
             </div>
-            <div class="ui grid">
-                <div class="five wide column">최근 날짜</div>
+            <div class="row">
+                <div class="five wide column teal">최근 날짜</div>
                 <div id="latest_attend_date" class="wide column"></div>
             </div>
-            <div class="ui grid">
-                <div class="five wide column">콤보</div>
+            <div class="row">
+                <div class="five wide column teal">콤보</div>
                 <div id="current_combo" class="wide column"></div>
             </div>
         </div>
         <div class="ui form segment">
             <div class="ui labeled input field fluid">
-                <label class="ui label">메시지</label>
+                <div class="ui label">메시지</div>
                 <input id="attend_message" type="text">
             </div>
             <div class="ui">
                 <div class="ui column">
-                    <button id="button" class="ui primary button">출석하기</button>
+                    <div id="button" class="ui primary button">
+                        <i class="paper plane icon"></i>출석하기
+                    </div>
                     <div id="attend_result" class="ui"></div>
                 </div>
             </div>
