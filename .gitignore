@@ -63,3 +63,7 @@ typings/
 # Typescript
 *.js
 *.js.map
+
+# Extension build output
+src/publish/*
+src/publish.zip
