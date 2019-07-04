@@ -75,7 +75,7 @@ export class AttendanceChecker {
                 });
         });
 
-        prom
+        return prom
             .then(result => {
                 log(result);
 
@@ -90,20 +90,34 @@ export class AttendanceChecker {
 
     static async updateAttendHtml() {
         const attendInfo = await this.getAttendInformation();
-        const strDate = attendInfo.date.toString();
-        const year = strDate.substring(0, 4);
-        const month = strDate.substr(4, 2);
-        const day = strDate.substr(6);
 
         document.getElementById("current_point")!.innerHTML = attendInfo.point.toString();
-        document.getElementById("latest_attend_date")!.innerHTML = `${year}-${month}-${day}`;
         document.getElementById("current_combo")!.innerHTML = attendInfo.combo.toString();
+
+        if (attendInfo.point === -1) {
+            document.getElementById("latest_attend_date")!.innerHTML = "로그인 후 사용해주세요";
+        } else {
+            const strDate = attendInfo.date.toString();
+            const year = strDate.substring(0, 4);
+            const month = strDate.substr(4, 2);
+            const day = strDate.substr(6);
+
+            document.getElementById("latest_attend_date")!.innerHTML = `${year}-${month}-${day}`;
+        }
     }
 
     static async getAttendInformation() {
         const tgdFetch = await fetch(AttendanceChecker.attendanceUrl, { mode: "cors" });
         const tgdBody = await tgdFetch.text();
         const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
+
+        if (this.isLoggedIn(tgdDocument) === false) {
+            return {
+                point: -1,
+                date: "0000-00-00",
+                combo: 0
+            };
+        }
 
         const currentPoint = this.parseCurrentPoint(tgdDocument);
 
@@ -144,6 +158,10 @@ export class AttendanceChecker {
     private static parseCurrentPoint(tgdDocument: Document) {
         const pointAnchor = tgdDocument.querySelector("a[href='/member/point'] strong")!;
 
-        return parseInt(pointAnchor.innerHTML);
+        return parseInt(pointAnchor ? pointAnchor.innerHTML : "-1");
+    }
+
+    private static isLoggedIn(tgdDocument: Document) {
+        return this.parseCurrentPoint(tgdDocument) !== -1;
     }
 }

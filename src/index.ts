@@ -14,7 +14,10 @@ button!.onclick = (ev) => {
         message = AttendanceChecker.defaultAttendMessage;
     }
 
-    AttendanceChecker.submit(message);
+    AttendanceChecker.submit(message)
+        .then(() => {
+            AttendanceChecker.updateAttendHtml();
+        });
 };
 
 attendMessageInput.placeholder = AttendanceChecker.defaultAttendMessage;
@@ -23,5 +26,4 @@ AttendanceChecker.updateAttendHtml();
 AttendanceChecker.getSyncAttendMessage()
     .then(attendMessage => {
         attendMessageInput.value = attendMessage;
-        AttendanceChecker.updateAttendHtml();
     });
