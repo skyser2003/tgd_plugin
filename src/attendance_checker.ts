@@ -94,7 +94,7 @@ export class AttendanceChecker {
         document.getElementById("current_point")!.innerHTML = attendInfo.point.toString();
         document.getElementById("current_combo")!.innerHTML = attendInfo.combo.toString();
 
-        if (attendInfo.point === -1) {
+        if (attendInfo.isLoggedIn === false) {
             document.getElementById("latest_attend_date")!.innerHTML = "로그인 후 사용해주세요";
         } else {
             const strDate = attendInfo.date.toString();
@@ -111,8 +111,13 @@ export class AttendanceChecker {
             tgdDocument = await this.getDocument();
         }
 
+        return this.parseAttendInformation(tgdDocument);
+    }
+
+    static parseAttendInformation(tgdDocument: Document) {
         if (this.isLoggedIn(tgdDocument) === false) {
             return {
+                isLoggedIn: false,
                 point: -1,
                 date: "0000-00-00",
                 combo: 0
@@ -129,18 +134,23 @@ export class AttendanceChecker {
         const latestCombo = parseInt(match[2]);
 
         return {
+            isLoggedIn: true,
             point: currentPoint,
             date: latestDate,
             combo: latestCombo
         }
     }
 
-    private static async getDocument() {
+    static async getDocument() {
         const tgdFetch = await fetch(AttendanceChecker.attendanceUrl, { mode: "cors" });
         const tgdBody = await tgdFetch.text();
         const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
 
         return tgdDocument;
+    }
+
+    static isLoggedIn(tgdDocument: Document) {
+        return this.parseCurrentPoint(tgdDocument) !== -1;
     }
 
     private static parseDonotbot(tgdDocument: Document) {
@@ -167,9 +177,5 @@ export class AttendanceChecker {
         const pointAnchor = tgdDocument.querySelector("a[href='/member/point'] strong")!;
 
         return parseInt(pointAnchor ? pointAnchor.innerHTML : "-1");
-    }
-
-    private static isLoggedIn(tgdDocument: Document) {
-        return this.parseCurrentPoint(tgdDocument) !== -1;
     }
 }
