@@ -37,13 +37,13 @@ export class AttendanceChecker {
         return new Promise((resolve, reject) => chrome.storage.sync.set(saveObj, () => resolve()));
     }
 
-    static submit(attendMessage: string) {
+    static async submit(attendMessage: string, tgdDocument?: Document) {
         const prom = new Promise<LoginResult>(async (resolve, reject) => {
-            const tgdFetch = await fetch(AttendanceChecker.attendanceUrl, { mode: "cors" });
-            const tgdBody = await tgdFetch.text();
-            const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
+            if (tgdDocument === undefined) {
+                tgdDocument = await this.getDocument();
+            }
 
-            if (tgdFetch.url !== AttendanceChecker.attendanceUrl) {
+            if (this.isLoggedIn(tgdDocument) === false) {
                 resolve({ success: false, message: "로그인을 한 후 시도해주세요" });
                 return;
             }
@@ -106,10 +106,10 @@ export class AttendanceChecker {
         }
     }
 
-    static async getAttendInformation() {
-        const tgdFetch = await fetch(AttendanceChecker.attendanceUrl, { mode: "cors" });
-        const tgdBody = await tgdFetch.text();
-        const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
+    static async getAttendInformation(tgdDocument?: Document) {
+        if (tgdDocument === undefined) {
+            tgdDocument = await this.getDocument();
+        }
 
         if (this.isLoggedIn(tgdDocument) === false) {
             return {
@@ -133,6 +133,14 @@ export class AttendanceChecker {
             date: latestDate,
             combo: latestCombo
         }
+    }
+
+    private static async getDocument() {
+        const tgdFetch = await fetch(AttendanceChecker.attendanceUrl, { mode: "cors" });
+        const tgdBody = await tgdFetch.text();
+        const tgdDocument = new DOMParser().parseFromString(tgdBody, "text/html");
+
+        return tgdDocument;
     }
 
     private static parseDonotbot(tgdDocument: Document) {
