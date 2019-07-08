@@ -6,7 +6,7 @@
     "permissions": [
         "declarativeContent",
         "storage",
-        "<all_urls>"
+        "https://tgd.kr/"
     ],
     "background": {
         "page": "background.html",
