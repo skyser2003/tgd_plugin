@@ -1,11 +1,12 @@
 {
     "name": "TGD plugin",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "TGD plugin",
     "manifest_version": 2,
     "permissions": [
         "declarativeContent",
         "storage",
+        "alarms",
         "https://tgd.kr/"
     ],
     "background": {

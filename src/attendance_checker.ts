@@ -80,8 +80,11 @@ export class AttendanceChecker {
                 log(result);
 
                 const resultDiv = document.getElementById("attend_result") as HTMLDivElement;
-                resultDiv.classList.add("segment");
-                resultDiv.innerHTML = result.message;
+                
+                if (resultDiv !== null) {
+                    resultDiv.classList.add("segment");
+                    resultDiv.innerHTML = result.message;
+                }
             })
             .catch(e => {
                 error(e);
