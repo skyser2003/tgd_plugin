@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish": "rm -f publish.zip && mkdir -p publish && cp -r manifest.json *.html scripts package.json publish/ && npm i --prefix=publish && rm publish/package.json publish/package-lock.json && zip -r publish.zip publish/*"
+    "publish": "npm run unpublish && mkdir -p publish && tsc && cp -r manifest.json *.html scripts package.json publish/ && npm i --prefix=publish && rm publish/package.json publish/package-lock.json publish/**/*.js.map && zip -r publish.zip publish/*",
+    "unpublish": "rm -rf publish.zip publish/ scripts/"
   },
   "repository": {
     "type": "git",
