@@ -22,8 +22,14 @@ button!.onclick = (ev) => {
 
 attendMessageInput.placeholder = AttendanceChecker.defaultAttendMessage;
 
-AttendanceChecker.updateAttendHtml();
-AttendanceChecker.getSyncAttendMessage()
-    .then(attendMessage => {
-        attendMessageInput.value = attendMessage;
-    });
+// Check attendance on html load
+async function attend() {
+    const tgdDocument = await AttendanceChecker.getDocument();
+    const attendMessage = await AttendanceChecker.getSyncAttendMessage();
+    await AttendanceChecker.submit(attendMessage, tgdDocument);
+
+    await AttendanceChecker.updateAttendHtml();
+    attendMessageInput.value = attendMessage;
+};
+
+attend();
