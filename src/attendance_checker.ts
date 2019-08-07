@@ -44,7 +44,7 @@ export class AttendanceChecker {
             }
 
             if (this.isLoggedIn(tgdDocument) === false) {
-                resolve({ success: false, message: "로그인을 한 후 시도해주세요" });
+                resolve({ success: false, message: "트게더 로그인을 한 후 다시 시도해주세요" });
                 return;
             }
 
