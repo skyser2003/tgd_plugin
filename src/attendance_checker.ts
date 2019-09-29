@@ -48,12 +48,9 @@ export class AttendanceChecker {
                 return;
             }
 
-            const answer = this.parseQuestion(tgdDocument);
-
             const formData = new FormData();
             formData.append("donotbot", this.parseDonotbot(tgdDocument));
             formData.append("message", attendMessage);
-            formData.append("answer", answer.toString());
 
             fetch(AttendanceChecker.attendanceUrl, {
                 method: "POST",
@@ -80,7 +77,7 @@ export class AttendanceChecker {
                 log(result);
 
                 const resultDiv = document.getElementById("attend_result") as HTMLDivElement;
-                
+
                 if (resultDiv !== null) {
                     resultDiv.classList.add("segment");
                     resultDiv.innerHTML = result.message;
@@ -158,18 +155,6 @@ export class AttendanceChecker {
 
     private static parseDonotbot(tgdDocument: Document) {
         return tgdDocument.getElementsByName("donotbot")[0].attributes.getNamedItem("value")!.nodeValue as string;
-    }
-
-    private static parseQuestion(tgdDocument: Document) {
-        const answerButton = tgdDocument.getElementById("attdbtn");
-        const text = answerButton!.parentElement!.textContent as string;
-        const regex = /:\s*(-?\d+) \+ (\d+) = ?/;
-
-        const match = text.match(regex);
-        const num1 = parseInt(match![1]);
-        const num2 = parseInt(match![2]);
-
-        return num1 + num2;
     }
 
     private static parseNickname(tgdDocument: Document) {
